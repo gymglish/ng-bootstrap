@@ -46,7 +46,12 @@ const NGB_DATEPICKER_VALIDATOR = {
 @Directive({
   selector: 'input[ngbDatepicker]',
   exportAs: 'ngbDatepicker',
-  host: {'(change)': 'manualDateChange($event.target.value)', '(keyup.esc)': 'close()', '(blur)': 'onBlur()'},
+  host: {
+    '(change)': 'manualDateChange($event.target.value)',
+    '(keyup.esc)': 'close()',
+    '(blur)': 'onBlur()',
+    '(document:click)': 'onDocumentClick($event)'
+  },
   providers: [NGB_DATEPICKER_VALUE_ACCESSOR, NGB_DATEPICKER_VALIDATOR, NgbDatepickerService]
 })
 export class NgbInputDatepicker implements OnChanges,
@@ -286,6 +291,12 @@ export class NgbInputDatepicker implements OnChanges,
     if (this.isOpen()) {
       this._cRef.instance.writeValue(model);
       this._onTouched();
+    }
+  }
+
+  private onDocumentClick($event: any) {
+    if (this.isOpen() && !this._elRef.nativeElement.parentElement.contains($event.target)) {
+      this.close();
     }
   }
 }
